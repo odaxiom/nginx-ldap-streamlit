@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  app:
+    build: .
+    container_name: streamlit
+    volumes:
+      - .:/app
+    ports:
+      - "8501:8501"
+  nginx:
+    image: nginx:1.15.9-alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - .:/app/
+    depends_on:
+      - app
+    ports:
+      - "81:80"
