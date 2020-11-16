@@ -8,12 +8,26 @@ services:
       - .:/app
     ports:
       - "8501:8501"
+
   nginx:
-    image: nginx:1.15.9-alpine
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - .:/app/
-    depends_on:
-      - app
+    image: bitnami/nginx
     ports:
-      - "81:80"
+     - 8080:8080
+    volumes:
+     - ./nginx.conf:/opt/bitnami/nginx/conf/server_blocks/ldap_nginx.conf
+
+  nginx-ldap:
+    image: bitnami/nginx-ldap-auth-daemon
+    ports:
+      - 8888:8888
+
+  openldap:
+    image: bitnami/openldap
+    ports:
+      - '1389:1389'
+      - '1636:1636'
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=adminpassword
+      - LDAP_USERS=customuser
+      - LDAP_PASSWORDS=custompassword
